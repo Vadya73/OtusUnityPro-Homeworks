@@ -1,8 +1,5 @@
 using System;
-using Character;
-using Components;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Input
 {
@@ -10,9 +7,6 @@ namespace Input
     {
         public event Action<Vector2> MoveAction;
         public event Action FireAction;
-        
-        [SerializeField] private MoveComponent _characterMoveComponent;
-        [SerializeField] private PlayerController _playerController;
         
         private void Update()
         {
