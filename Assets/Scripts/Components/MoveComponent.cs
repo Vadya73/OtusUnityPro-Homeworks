@@ -1,21 +1,18 @@
 using UnityEngine;
 
-namespace Components
+namespace ShootEmUp
 {
     public sealed class MoveComponent : MonoBehaviour
     {
         [SerializeField] private Rigidbody2D _rigidbody2D;
-        [SerializeField] private float _speed = 5.0f;
-        
-        private void Awake()
-        {
-            if (_rigidbody2D == null)
-                _rigidbody2D = GetComponent<Rigidbody2D>();
-        }
 
-        public void MoveByRigidbodyVelocity(Vector2 vector)
+        [SerializeField] private float _speed = 5.0f;
+
+        public Vector2 Position => transform.position;
+        
+        public void Move(Vector2 direction)
         {
-            Vector2 nextPosition = _rigidbody2D.position + vector * _speed;
+            Vector2 nextPosition = _rigidbody2D.position + direction * _speed;
             _rigidbody2D.MovePosition(nextPosition);
         }
     }

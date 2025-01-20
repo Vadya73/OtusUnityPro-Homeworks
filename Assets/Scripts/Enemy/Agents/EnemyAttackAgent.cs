@@ -1,52 +1,22 @@
-using Components;
+using System;
 using UnityEngine;
 
-namespace Enemy.Agents
+namespace ShootEmUp
 {
     public sealed class EnemyAttackAgent : MonoBehaviour
     {
-        public delegate void FireHandler(GameObject enemy, Vector2 position, Vector2 direction);
-        public event FireHandler OnFire;
+        public event Action<Vector2, Vector2> OnFired;
         
-        [SerializeField] private WeaponComponent _weaponComponent;
-        [SerializeField] private EnemyMoveAgent _moveAgent;
-        [SerializeField] private float _countdown;
+        public Transform Target { private get; set; }
 
-        private GameObject target;
-        private float currentTime;
-
-        public void SetTarget(GameObject target)
+        public void Fire(Vector2 startPosition)
         {
-            this.target = target;
-        }
-
-        public void Reset()
-        {
-            currentTime = _countdown;
-        }
-
-        private void FixedUpdate()
-        {
-            if (!_moveAgent.IsReached)
+            if (Target == null)
                 return;
             
-            if (!target.GetComponent<HitPointsComponent>().IsHitPointsExists())
-                return;
-
-            currentTime -= Time.fixedDeltaTime;
-            if (currentTime <= 0)
-            {
-                Fire();
-                currentTime += _countdown;
-            }
-        }
-
-        private void Fire()
-        {
-            var startPosition = _weaponComponent.Position;
-            var vector = (Vector2) target.transform.position - startPosition;
-            var direction = vector.normalized;
-            OnFire?.Invoke(gameObject, startPosition, direction);
+            Vector2 vectorToPlayer = (Vector2) Target.position - startPosition;
+            Vector2 directionToPlayer = vectorToPlayer.normalized;
+            OnFired?.Invoke(startPosition, directionToPlayer);
         }
     }
 }

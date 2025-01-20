@@ -1,38 +1,48 @@
-using Components;
+using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace Enemy.Agents
+namespace ShootEmUp
 {
     public sealed class EnemyMoveAgent : MonoBehaviour
     {
-        public bool IsReached { get { return isReached; } }
-
         [SerializeField] private MoveComponent _moveComponent;
 
-        private Vector2 destination;
-        private bool isReached;
+        private Transform _transform;
+        
+        private Vector2 _destination;
 
-        public void SetDestination(Vector2 endPoint)
+        public Vector2 Destination
         {
-            destination = endPoint;
-            isReached = false;
+            set
+            {
+                IsReached = false;
+                _destination = value;
+            }
         }
+
+        public bool IsReached { get; private set; }
+
+        private void OnValidate() => _moveComponent = GetComponent<MoveComponent>();
+
+        private void Awake() => _transform = transform;
 
         private void FixedUpdate()
         {
-            if (isReached)
+            if (IsReached) 
                 return;
             
-            var vector = destination - (Vector2) transform.position;
-            if (vector.magnitude <= 0.25f)
+            Vector2 vectorToDestination = _destination - (Vector2) _transform.position;
+            float vectorLength = vectorToDestination.magnitude;
+            
+            if (vectorLength <= 0.25f)
             {
-                isReached = true;
+                IsReached = true;
                 return;
             }
 
-            var direction = vector.normalized * Time.fixedDeltaTime;
-            _moveComponent.MoveByRigidbodyVelocity(direction);
+            Vector2 normalizedVector = vectorToDestination / vectorLength;
+            Vector2 displacement = normalizedVector * Time.fixedDeltaTime;
+            _moveComponent.Move(displacement);
         }
     }
 }

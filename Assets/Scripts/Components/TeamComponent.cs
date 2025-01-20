@@ -1,11 +1,11 @@
-using Common;
 using UnityEngine;
 
-namespace Components
+namespace ShootEmUp
 {
     public sealed class TeamComponent : MonoBehaviour
     {
-        [SerializeField] private PhysicsLayer _teamPhysicsLayer;
-        public PhysicsLayer TeamPhysicsLayer => _teamPhysicsLayer;
+        public CohesionType CohesionType => _cohesionType;
+
+        [SerializeField] private CohesionType _cohesionType;
     }
 }
